@@ -1,15 +1,22 @@
+import os
+
+# 在导入 PyTorch、初始化 CUDA 前设置矩阵运算的可复现配置。
+os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+
+import torch
 from torch.utils.data import DataLoader, random_split
 from torchvision.datasets import FashionMNIST
 from torchvision.transforms import ToTensor
 from torch import nn
 from torch.optim import SGD
-import torch
 
 seed = 42
 torch.manual_seed(seed)
+torch.use_deterministic_algorithms(True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
+print("Seed:", seed)
 
 full_dataset = FashionMNIST(
     root="./data",
@@ -26,10 +33,13 @@ train_dataset, val_dataset = random_split(
     generator=split_generator
 )
 
+train_generator = torch.Generator().manual_seed(seed)
+
 train_loader = DataLoader(
     train_dataset,
     batch_size=32,
     shuffle=True,
+    generator=train_generator,
 )
 
 val_loader = DataLoader(
@@ -38,15 +48,24 @@ val_loader = DataLoader(
     shuffle=False,
 )
 
-images, labels = next(iter(train_loader))
+model_name = "mlp"
 
-print("Batch images shape:", images.shape)
-print("Batch labels shape:", labels.shape)
+if model_name == "softmax":
+    model = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(784, 10),
+    )
+elif model_name == "mlp":
+    model = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(784, 128),
+        nn.ReLU(),
+        nn.Linear(128, 10),
+    )
+else:
+    raise ValueError(f"Unknown model: {model_name}")
 
-model = nn.Sequential(
-    nn.Flatten(),
-    nn.Linear(784, 10),
-)
+print("Model:", model_name)
 
 model = model.to(device)
 
@@ -54,6 +73,9 @@ loss_fn = nn.CrossEntropyLoss()
 optimizer = SGD(model.parameters(), lr=0.1)
 
 epochs = 3
+
+# 训练前重置顺序，避免此前预览 DataLoader 消耗随机状态。
+train_generator.manual_seed(seed)
 
 for epoch in range(epochs):
     model.train()
@@ -100,4 +122,5 @@ with torch.no_grad():
 
 val_accuracy = val_correct / val_count
 print("Validation samples:", val_count)
+print("Validation correct:", val_correct)
 print(f"Validation accuracy: {val_accuracy:.2%}")
