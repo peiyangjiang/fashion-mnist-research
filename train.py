@@ -1,6 +1,5 @@
 import os
 
-# 在导入 PyTorch、初始化 CUDA 前设置矩阵运算的可复现配置。
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 import torch
@@ -74,7 +73,6 @@ optimizer = SGD(model.parameters(), lr=0.1)
 
 epochs = 3
 
-# 训练前重置顺序，避免此前预览 DataLoader 消耗随机状态。
 train_generator.manual_seed(seed)
 
 for epoch in range(epochs):
@@ -109,6 +107,11 @@ model.eval()
 val_correct = 0
 val_count = 0
 
+class_correct = torch.zeros(10, dtype=torch.long)
+class_count = torch.zeros(10, dtype=torch.long)
+
+confusion_matrix = torch.zeros((10, 10), dtype=torch.long)
+
 with torch.no_grad():
     for images, labels in val_loader:
         images = images.to(device)
@@ -120,7 +123,37 @@ with torch.no_grad():
         val_correct += (predictions == labels).sum().item()
         val_count += labels.size(0)
 
+        for class_id in range(10):
+            mask = labels == class_id
+            class_count[class_id] += mask.sum().item()
+            class_correct[class_id] += ((predictions == labels) & mask).sum().item()
+
+        true_labels = labels.cpu().tolist()
+        predicted_labels = predictions.cpu().tolist()
+
+        for true_label, predicted_label in zip(true_labels, predicted_labels):
+            confusion_matrix[true_label, predicted_label] += 1
+
 val_accuracy = val_correct / val_count
 print("Validation samples:", val_count)
 print("Validation correct:", val_correct)
 print(f"Validation accuracy: {val_accuracy:.2%}")
+
+for class_id, class_name in enumerate(full_dataset.classes):
+    correct = class_correct[class_id].item()
+    total = class_count[class_id].item()
+
+    if total == 0:
+        print(f"{class_name}: no validation samples")
+        continue
+
+    accuracy = correct / total
+    print(f"{class_name}: {correct}/{total}, accuracy = {accuracy:.2%}")
+
+print("\nConfusion matrix (rows=true, columns=predicted):")
+print(confusion_matrix)
+
+print("Matrix samples:", confusion_matrix.sum().item())
+print("Matrix correct:", confusion_matrix.diag().sum().item())
+print("Row counts match:", torch.equal(confusion_matrix.sum(dim=1), class_count))
+print("Diagonal counts match:", torch.equal(confusion_matrix.diag(), class_correct))
