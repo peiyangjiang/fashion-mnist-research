@@ -3,13 +3,25 @@ import os
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 import torch
-from torch.utils.data import DataLoader, random_split, Subset
+from torch.utils.data import Dataset, DataLoader, random_split, Subset
 from torchvision.datasets import FashionMNIST
 from torchvision.transforms import ToTensor
 from torch import nn
 from torch.optim import SGD
 
-init_seed = 46
+class RelabeledDataset(Dataset):
+    def __init__(self, dataset, labels):
+        self.dataset = dataset
+        self.labels = labels
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, index):
+        image, _ = self.dataset[index]
+        return image, self.labels[index]
+
+init_seed = 42
 split_seed = 42
 shuffle_seed = 42
 
@@ -46,14 +58,60 @@ subset_indices = torch.randperm(
 
 train_dataset = Subset(train_pool, subset_indices[:train_size])
 
+train_pool_indices = torch.tensor(train_pool.indices, dtype=torch.long)
+train_indices = train_pool_indices[train_dataset.indices]
+
+original_labels = full_dataset.targets[train_indices].clone()
+noisy_labels = original_labels.clone()
+
+original_val_labels = full_dataset.targets[val_dataset.indices].clone()
+
+noise_rate = 0.2
+noise_seed = 42
+print(f"Noise rate: {noise_rate:.0%}")
+print("Noise seed:", noise_seed)
+
+noise_generator = torch.Generator().manual_seed(noise_seed)
+
+num_noisy = int(noise_rate * len(train_dataset))
+noisy_indices = torch.randperm(
+    len(train_dataset),
+    generator=noise_generator,
+)[:num_noisy]
+
+label_offsets = torch.randint(
+    1,
+    10,
+    (num_noisy,),
+    generator=noise_generator,
+)
+
+noisy_labels[noisy_indices] = (
+    original_labels[noisy_indices] + label_offsets
+) % 10
+
+noisy_train_dataset = RelabeledDataset(train_dataset, noisy_labels)
+
+actual_noisy = (noisy_labels != original_labels).sum().item()
+val_unchanged = torch.equal(
+    full_dataset.targets[val_dataset.indices],
+    original_val_labels,
+)
+
+print("Changed training labels:", actual_noisy)
+print("Validation labels unchanged:", val_unchanged)
+
+assert actual_noisy == num_noisy
+assert val_unchanged
+
 train_generator = torch.Generator().manual_seed(shuffle_seed)
 
 train_loader = DataLoader(
-    train_dataset,
+    noisy_train_dataset,
     batch_size=32,
     shuffle=True,
     generator=train_generator,
-    drop_last=True
+    drop_last=True,
 )
 
 val_loader = DataLoader(
@@ -62,7 +120,18 @@ val_loader = DataLoader(
     shuffle=False,
 )
 
-model_name = "softmax"
+noisy_eval_dataset = Subset(train_dataset, noisy_indices.tolist())
+
+noisy_eval_loader = DataLoader(
+    noisy_eval_dataset,
+    batch_size=32,
+    shuffle=False,
+    drop_last=False,
+)
+
+noisy_eval_labels = noisy_labels[noisy_indices]
+
+model_name = "mlp"
 
 if model_name == "softmax":
     model = nn.Sequential(
@@ -186,3 +255,40 @@ print("Matrix samples:", confusion_matrix.sum().item())
 print("Matrix correct:", confusion_matrix.diag().sum().item())
 print("Row counts match:", torch.equal(confusion_matrix.sum(dim=1), class_count))
 print("Diagonal counts match:", torch.equal(confusion_matrix.diag(), class_correct))
+
+noise_fit_correct = 0
+noise_clean_correct = 0
+noise_eval_count = 0
+
+model.eval()
+
+with torch.no_grad():
+    for images, clean_labels in noisy_eval_loader:
+        images = images.to(device)
+        clean_labels = clean_labels.to(device)
+
+        batch_size = images.size(0)
+        noisy_targets = noisy_eval_labels[
+            noise_eval_count : noise_eval_count + batch_size
+        ].to(device)
+
+        logits = model(images)
+        predictions = logits.argmax(dim=1)
+
+        noise_fit_correct += (predictions == noisy_targets).sum().item()
+        noise_clean_correct += (predictions == clean_labels).sum().item()
+        noise_eval_count += batch_size
+
+assert noise_eval_count == num_noisy
+assert noise_fit_correct + noise_clean_correct <= noise_eval_count
+
+print("\nCorrupted training samples evaluated:", noise_eval_count)
+
+if noise_eval_count > 0:
+    print("Wrong-label matches:", noise_fit_correct)
+    print(f"Wrong-label fit rate: {noise_fit_correct / noise_eval_count:.2%}")
+    print("Original-label matches:", noise_clean_correct)
+    print(f"Original-label accuracy: {noise_clean_correct / noise_eval_count:.2%}")
+else:
+    print("Wrong-label fit rate: N/A (no corrupted training samples)")
+    print("Original-label accuracy: N/A (no corrupted training samples)")
