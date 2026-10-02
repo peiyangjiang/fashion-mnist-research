@@ -1,0 +1,55 @@
+Device: cuda
+Seeds: init=46, split=42, shuffle=42
+Noise rate: 20%
+Noise seed: 42
+Changed training labels: 3600
+Validation labels unchanged: True
+Model: softmax
+Train size: 18000
+Subset seed: 42
+Max training steps: 5000
+Step 562: average loss for this pass = 1.5123
+Step 1124: average loss for this pass = 1.3967
+Step 1686: average loss for this pass = 1.3679
+Step 2248: average loss for this pass = 1.3628
+Step 2810: average loss for this pass = 1.3430
+Step 3372: average loss for this pass = 1.3314
+Step 3934: average loss for this pass = 1.3205
+Step 4496: average loss for this pass = 1.3134
+Step 5000: average loss for this pass = 1.3111
+Completed training steps: 5000
+Validation samples: 6000
+Validation correct: 4372
+Validation accuracy: 72.87%
+T-shirt/top: 296/658, accuracy = 44.98%
+Trouser: 564/611, accuracy = 92.31%
+Pullover: 582/612, accuracy = 95.10%
+Dress: 402/562, accuracy = 71.53%
+Coat: 125/607, accuracy = 20.59%
+Sandal: 512/613, accuracy = 83.52%
+Shirt: 303/600, accuracy = 50.50%
+Sneaker: 479/537, accuracy = 89.20%
+Bag: 544/598, accuracy = 90.97%
+Ankle boot: 565/602, accuracy = 93.85%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[296,   0, 192,  17,   0,   0, 138,   0,  14,   1],
+        [  0, 564,  33,   6,   1,   0,   6,   0,   1,   0],
+        [  1,   0, 582,   2,   6,   1,  16,   1,   3,   0],
+        [  4,   2,  86, 402,  13,   2,  48,   0,   5,   0],
+        [  0,   0, 401,  10, 125,   1,  68,   1,   1,   0],
+        [  1,   0,  17,   0,   0, 512,   1,  43,   6,  33],
+        [ 31,   1, 232,   8,  13,   1, 303,   0,  10,   1],
+        [  0,   0,   2,   0,   0,  23,   0, 479,   3,  30],
+        [  0,   0,  28,   2,   2,   3,   8,   5, 544,   6],
+        [  0,   0,   6,   0,   0,   3,   0,  28,   0, 565]])
+Matrix samples: 6000
+Matrix correct: 4372
+Row counts match: True
+Diagonal counts match: True
+
+Corrupted training samples evaluated: 3600
+Wrong-label matches: 116
+Wrong-label fit rate: 3.22%
+Original-label matches: 2634
+Original-label accuracy: 73.17%

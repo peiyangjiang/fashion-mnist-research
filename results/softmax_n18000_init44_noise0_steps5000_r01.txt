@@ -1,0 +1,53 @@
+Device: cuda
+Seeds: init=44, split=42, shuffle=42
+Noise rate: 0%
+Noise seed: 42
+Changed training labels: 0
+Validation labels unchanged: True
+Model: softmax
+Train size: 18000
+Subset seed: 42
+Max training steps: 5000
+Step 562: average loss for this pass = 0.7238
+Step 1124: average loss for this pass = 0.5349
+Step 1686: average loss for this pass = 0.5017
+Step 2248: average loss for this pass = 0.4865
+Step 2810: average loss for this pass = 0.4683
+Step 3372: average loss for this pass = 0.4508
+Step 3934: average loss for this pass = 0.4442
+Step 4496: average loss for this pass = 0.4390
+Step 5000: average loss for this pass = 0.4355
+Completed training steps: 5000
+Validation samples: 6000
+Validation correct: 4982
+Validation accuracy: 83.03%
+T-shirt/top: 504/658, accuracy = 76.60%
+Trouser: 588/611, accuracy = 96.24%
+Pullover: 549/612, accuracy = 89.71%
+Dress: 476/562, accuracy = 84.70%
+Coat: 413/607, accuracy = 68.04%
+Sandal: 534/613, accuracy = 87.11%
+Shirt: 290/600, accuracy = 48.33%
+Sneaker: 488/537, accuracy = 90.88%
+Bag: 566/598, accuracy = 94.65%
+Ankle boot: 574/602, accuracy = 95.35%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[504,   5,  51,  23,   3,   0,  64,   0,   7,   1],
+        [  2, 588,  10,   8,   3,   0,   0,   0,   0,   0],
+        [  6,   1, 549,   3,  30,   0,  20,   0,   3,   0],
+        [ 14,   6,  16, 476,  34,   0,  15,   0,   1,   0],
+        [  1,   1, 142,  22, 413,   0,  27,   0,   1,   0],
+        [  2,   1,   0,   0,   0, 534,   0,  39,   7,  30],
+        [ 76,   4, 146,  22,  51,   0, 290,   0,  11,   0],
+        [  0,   0,   0,   0,   0,  12,   0, 488,   2,  35],
+        [  1,   0,   8,   3,   3,   1,   7,   9, 566,   0],
+        [  0,   0,   1,   0,   0,   3,   0,  23,   1, 574]])
+Matrix samples: 6000
+Matrix correct: 4982
+Row counts match: True
+Diagonal counts match: True
+
+Corrupted training samples evaluated: 0
+Wrong-label fit rate: N/A (no corrupted training samples)
+Original-label accuracy: N/A (no corrupted training samples)

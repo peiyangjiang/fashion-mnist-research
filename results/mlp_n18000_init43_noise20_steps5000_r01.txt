@@ -1,0 +1,55 @@
+Device: cuda
+Seeds: init=43, split=42, shuffle=42
+Noise rate: 20%
+Noise seed: 42
+Changed training labels: 3600
+Validation labels unchanged: True
+Model: mlp
+Train size: 18000
+Subset seed: 42
+Max training steps: 5000
+Step 562: average loss for this pass = 1.4656
+Step 1124: average loss for this pass = 1.3172
+Step 1686: average loss for this pass = 1.2769
+Step 2248: average loss for this pass = 1.2558
+Step 2810: average loss for this pass = 1.2310
+Step 3372: average loss for this pass = 1.2147
+Step 3934: average loss for this pass = 1.1997
+Step 4496: average loss for this pass = 1.1838
+Step 5000: average loss for this pass = 1.1710
+Completed training steps: 5000
+Validation samples: 6000
+Validation correct: 5070
+Validation accuracy: 84.50%
+T-shirt/top: 500/658, accuracy = 75.99%
+Trouser: 584/611, accuracy = 95.58%
+Pullover: 517/612, accuracy = 84.48%
+Dress: 485/562, accuracy = 86.30%
+Coat: 430/607, accuracy = 70.84%
+Sandal: 528/613, accuracy = 86.13%
+Shirt: 388/600, accuracy = 64.67%
+Sneaker: 489/537, accuracy = 91.06%
+Bag: 567/598, accuracy = 94.82%
+Ankle boot: 582/602, accuracy = 96.68%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[500,   0,  22,  14,   3,   0, 111,   0,   7,   1],
+        [  2, 584,   9,   9,   5,   0,   2,   0,   0,   0],
+        [  4,   0, 517,   5,  34,   0,  46,   0,   6,   0],
+        [ 16,   3,   9, 485,  23,   0,  23,   0,   2,   1],
+        [  1,   0,  83,  24, 430,   0,  65,   0,   4,   0],
+        [  1,   0,   1,   0,   1, 528,   0,  33,   8,  41],
+        [ 72,   0,  83,  15,  33,   0, 388,   0,   8,   1],
+        [  0,   0,   0,   0,   0,  13,   0, 489,   2,  33],
+        [  0,   0,   6,   2,   3,   0,  11,   5, 567,   4],
+        [  0,   0,   1,   0,   0,   3,   0,  16,   0, 582]])
+Matrix samples: 6000
+Matrix correct: 5070
+Row counts match: True
+Diagonal counts match: True
+
+Corrupted training samples evaluated: 3600
+Wrong-label matches: 85
+Wrong-label fit rate: 2.36%
+Original-label matches: 3044
+Original-label accuracy: 84.56%

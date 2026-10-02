@@ -1,3 +1,4 @@
+import argparse
 import os
 
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
@@ -21,7 +22,13 @@ class RelabeledDataset(Dataset):
         image, _ = self.dataset[index]
         return image, self.labels[index]
 
-init_seed = 42
+parser = argparse.ArgumentParser(description="Train a FashionMNIST model.")
+parser.add_argument("--init-seed", type=int, default=42)
+parser.add_argument("--model", choices=["softmax", "mlp"], default="mlp")
+parser.add_argument("--noise-rate", type=float, choices=[0.0, 0.2], default=0.2)
+args = parser.parse_args()
+
+init_seed = args.init_seed
 split_seed = 42
 shuffle_seed = 42
 
@@ -66,7 +73,7 @@ noisy_labels = original_labels.clone()
 
 original_val_labels = full_dataset.targets[val_dataset.indices].clone()
 
-noise_rate = 0.2
+noise_rate = args.noise_rate
 noise_seed = 42
 print(f"Noise rate: {noise_rate:.0%}")
 print("Noise seed:", noise_seed)
@@ -131,7 +138,7 @@ noisy_eval_loader = DataLoader(
 
 noisy_eval_labels = noisy_labels[noisy_indices]
 
-model_name = "mlp"
+model_name = args.model
 
 if model_name == "softmax":
     model = nn.Sequential(
