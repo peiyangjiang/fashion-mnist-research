@@ -3,7 +3,7 @@ import os
 os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
 
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, random_split, Subset
 from torchvision.datasets import FashionMNIST
 from torchvision.transforms import ToTensor
 from torch import nn
@@ -29,11 +29,22 @@ full_dataset = FashionMNIST(
 
 split_generator = torch.Generator().manual_seed(split_seed)
 
-train_dataset, val_dataset = random_split(
+train_pool, val_dataset = random_split(
     full_dataset,
     [54000, 6000],
     generator=split_generator
 )
+
+train_size = 18000
+subset_seed = 42
+
+subset_generator = torch.Generator().manual_seed(subset_seed)
+subset_indices = torch.randperm(
+    len(train_pool),
+    generator=subset_generator,
+).tolist()
+
+train_dataset = Subset(train_pool, subset_indices[:train_size])
 
 train_generator = torch.Generator().manual_seed(shuffle_seed)
 
@@ -42,6 +53,7 @@ train_loader = DataLoader(
     batch_size=32,
     shuffle=True,
     generator=train_generator,
+    drop_last=True
 )
 
 val_loader = DataLoader(
@@ -50,7 +62,7 @@ val_loader = DataLoader(
     shuffle=False,
 )
 
-model_name = "mlp"
+model_name = "softmax"
 
 if model_name == "softmax":
     model = nn.Sequential(
@@ -74,11 +86,19 @@ model = model.to(device)
 loss_fn = nn.CrossEntropyLoss()
 optimizer = SGD(model.parameters(), lr=0.1)
 
-epochs = 3
+max_steps = 5000
+step = 0
+
+if len(train_loader) == 0:
+    raise ValueError("Training data must contain at least one full batch.")
+
+print("Train size:", len(train_dataset))
+print("Subset seed:", subset_seed)
+print("Max training steps:", max_steps)
 
 train_generator.manual_seed(shuffle_seed)
 
-for epoch in range(epochs):
+while step < max_steps:
     model.train()
 
     loss_sum = 0.0
@@ -102,8 +122,14 @@ for epoch in range(epochs):
 
         optimizer.step()
 
+        step += 1
+        if step >= max_steps:
+            break
+
     average_loss = loss_sum / sample_count
-    print(f"Epoch {epoch + 1}: average training loss = {average_loss:.4f}")
+    print(f"Step {step}: average loss for this pass = {average_loss:.4f}")
+
+print("Completed training steps:", step)
 
 model.eval()
 

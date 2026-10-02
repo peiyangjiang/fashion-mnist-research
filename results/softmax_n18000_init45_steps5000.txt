@@ -1,0 +1,45 @@
+Device: cuda
+Seeds: init=45, split=42, shuffle=42
+Model: softmax
+Train size: 18000
+Subset seed: 42
+Max training steps: 5000
+Step 562: average loss for this pass = 0.7234
+Step 1124: average loss for this pass = 0.5348
+Step 1686: average loss for this pass = 0.5019
+Step 2248: average loss for this pass = 0.4866
+Step 2810: average loss for this pass = 0.4687
+Step 3372: average loss for this pass = 0.4510
+Step 3934: average loss for this pass = 0.4444
+Step 4496: average loss for this pass = 0.4392
+Step 5000: average loss for this pass = 0.4358
+Completed training steps: 5000
+Validation samples: 6000
+Validation correct: 4967
+Validation accuracy: 82.78%
+T-shirt/top: 502/658, accuracy = 76.29%
+Trouser: 588/611, accuracy = 96.24%
+Pullover: 547/612, accuracy = 89.38%
+Dress: 475/562, accuracy = 84.52%
+Coat: 412/607, accuracy = 67.87%
+Sandal: 531/613, accuracy = 86.62%
+Shirt: 283/600, accuracy = 47.17%
+Sneaker: 488/537, accuracy = 90.88%
+Bag: 566/598, accuracy = 94.65%
+Ankle boot: 575/602, accuracy = 95.51%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[502,   5,  53,  23,   3,   0,  64,   0,   7,   1],
+        [  2, 588,  10,   8,   3,   0,   0,   0,   0,   0],
+        [  6,   1, 547,   3,  31,   0,  21,   0,   3,   0],
+        [ 14,   6,  17, 475,  34,   0,  15,   0,   1,   0],
+        [  1,   1, 144,  22, 412,   0,  26,   0,   1,   0],
+        [  2,   1,   0,   0,   0, 531,   0,  41,   7,  31],
+        [ 79,   4, 150,  21,  52,   0, 283,   0,  11,   0],
+        [  0,   0,   0,   0,   0,  12,   0, 488,   2,  35],
+        [  1,   0,   8,   3,   3,   1,   7,   9, 566,   0],
+        [  0,   0,   1,   0,   0,   2,   0,  23,   1, 575]])
+Matrix samples: 6000
+Matrix correct: 4967
+Row counts match: True
+Diagonal counts match: True

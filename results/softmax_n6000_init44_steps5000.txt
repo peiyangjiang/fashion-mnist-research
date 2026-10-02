@@ -1,0 +1,63 @@
+Device: cuda
+Seeds: init=44, split=42, shuffle=42
+Model: softmax
+Train size: 6000
+Subset seed: 42
+Max training steps: 5000
+Step 187: average loss for this pass = 0.9171
+Step 374: average loss for this pass = 0.6174
+Step 561: average loss for this pass = 0.5561
+Step 748: average loss for this pass = 0.5274
+Step 935: average loss for this pass = 0.4999
+Step 1122: average loss for this pass = 0.4860
+Step 1309: average loss for this pass = 0.4695
+Step 1496: average loss for this pass = 0.4497
+Step 1683: average loss for this pass = 0.4450
+Step 1870: average loss for this pass = 0.4285
+Step 2057: average loss for this pass = 0.4187
+Step 2244: average loss for this pass = 0.4173
+Step 2431: average loss for this pass = 0.4038
+Step 2618: average loss for this pass = 0.4037
+Step 2805: average loss for this pass = 0.3966
+Step 2992: average loss for this pass = 0.3917
+Step 3179: average loss for this pass = 0.3839
+Step 3366: average loss for this pass = 0.3900
+Step 3553: average loss for this pass = 0.3810
+Step 3740: average loss for this pass = 0.3724
+Step 3927: average loss for this pass = 0.3778
+Step 4114: average loss for this pass = 0.3690
+Step 4301: average loss for this pass = 0.3684
+Step 4488: average loss for this pass = 0.3614
+Step 4675: average loss for this pass = 0.3606
+Step 4862: average loss for this pass = 0.3612
+Step 5000: average loss for this pass = 0.3507
+Completed training steps: 5000
+Validation samples: 6000
+Validation correct: 5011
+Validation accuracy: 83.52%
+T-shirt/top: 535/658, accuracy = 81.31%
+Trouser: 593/611, accuracy = 97.05%
+Pullover: 479/612, accuracy = 78.27%
+Dress: 509/562, accuracy = 90.57%
+Coat: 438/607, accuracy = 72.16%
+Sandal: 529/613, accuracy = 86.30%
+Shirt: 306/600, accuracy = 51.00%
+Sneaker: 492/537, accuracy = 91.62%
+Bag: 566/598, accuracy = 94.65%
+Ankle boot: 564/602, accuracy = 93.69%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[535,   2,  16,  60,   4,   0,  34,   0,   7,   0],
+        [  3, 593,   3,  11,   0,   0,   0,   0,   1,   0],
+        [ 11,   2, 479,   8,  55,   0,  52,   0,   5,   0],
+        [ 13,   5,   7, 509,  15,   0,  12,   0,   1,   0],
+        [  1,   1,  71,  48, 438,   0,  46,   0,   2,   0],
+        [  2,   2,   0,   0,   0, 529,   0,  36,  13,  31],
+        [110,   4,  73,  49,  42,   0, 306,   0,  16,   0],
+        [  0,   0,   0,   0,   0,  18,   0, 492,   3,  24],
+        [  5,   0,   2,   5,   1,   2,   9,   8, 566,   0],
+        [  1,   2,   0,   0,   0,   5,   0,  29,   1, 564]])
+Matrix samples: 6000
+Matrix correct: 5011
+Row counts match: True
+Diagonal counts match: True

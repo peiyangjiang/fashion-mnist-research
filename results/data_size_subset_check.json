@@ -1,0 +1,97 @@
+{
+  "split_seed": 42,
+  "subset_seed": 42,
+  "pool_size": 54000,
+  "validation_size": 6000,
+  "validation_class_counts": [
+    658,
+    611,
+    612,
+    562,
+    607,
+    613,
+    600,
+    537,
+    598,
+    602
+  ],
+  "validation_indices_sha256": "74f49792a01c26b993eee4da71b672641c8181832fa9b518f027337693cd706a",
+  "class_names": [
+    "T-shirt/top",
+    "Trouser",
+    "Pullover",
+    "Dress",
+    "Coat",
+    "Sandal",
+    "Shirt",
+    "Sneaker",
+    "Bag",
+    "Ankle boot"
+  ],
+  "subsets": [
+    {
+      "train_size": 6000,
+      "unique_samples": 6000,
+      "nested_with_previous": true,
+      "validation_disjoint": true,
+      "class_counts": [
+        585,
+        603,
+        584,
+        597,
+        604,
+        555,
+        617,
+        642,
+        594,
+        619
+      ],
+      "ordered_global_indices_sha256": "4481cac613902afd99a41e05f0202e6b46bea1ed15b6db458c665b43a69e9451"
+    },
+    {
+      "train_size": 18000,
+      "unique_samples": 18000,
+      "nested_with_previous": true,
+      "validation_disjoint": true,
+      "class_counts": [
+        1765,
+        1765,
+        1773,
+        1754,
+        1816,
+        1814,
+        1798,
+        1908,
+        1799,
+        1808
+      ],
+      "ordered_global_indices_sha256": "2a155e1d8d162b46d5dcb4d830609a2e858e0718f41aabba64bef4b32e77b4ec"
+    },
+    {
+      "train_size": 54000,
+      "unique_samples": 54000,
+      "nested_with_previous": true,
+      "validation_disjoint": true,
+      "class_counts": [
+        5342,
+        5389,
+        5388,
+        5438,
+        5393,
+        5387,
+        5400,
+        5463,
+        5402,
+        5398
+      ],
+      "ordered_global_indices_sha256": "834d0b49e87b7a78cba87f17b82e6cad1f980431ce7b7a07081e6d5103f4a643"
+    }
+  ],
+  "environment": {
+    "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "torch": "2.11.0+cu128",
+    "torchvision": "0.26.0+cu128",
+    "torch_cuda_build": "12.8"
+  }
+}
