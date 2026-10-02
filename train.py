@@ -9,13 +9,16 @@ from torchvision.transforms import ToTensor
 from torch import nn
 from torch.optim import SGD
 
-seed = 42
-torch.manual_seed(seed)
+init_seed = 46
+split_seed = 42
+shuffle_seed = 42
+
+torch.manual_seed(init_seed)
 torch.use_deterministic_algorithms(True)
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Device:", device)
-print("Seed:", seed)
+print(f"Seeds: init={init_seed}, split={split_seed}, shuffle={shuffle_seed}")
 
 full_dataset = FashionMNIST(
     root="./data",
@@ -24,7 +27,7 @@ full_dataset = FashionMNIST(
     transform=ToTensor(),
 )
 
-split_generator = torch.Generator().manual_seed(seed)
+split_generator = torch.Generator().manual_seed(split_seed)
 
 train_dataset, val_dataset = random_split(
     full_dataset,
@@ -32,7 +35,7 @@ train_dataset, val_dataset = random_split(
     generator=split_generator
 )
 
-train_generator = torch.Generator().manual_seed(seed)
+train_generator = torch.Generator().manual_seed(shuffle_seed)
 
 train_loader = DataLoader(
     train_dataset,
@@ -73,7 +76,7 @@ optimizer = SGD(model.parameters(), lr=0.1)
 
 epochs = 3
 
-train_generator.manual_seed(seed)
+train_generator.manual_seed(shuffle_seed)
 
 for epoch in range(epochs):
     model.train()

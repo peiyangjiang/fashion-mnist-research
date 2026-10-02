@@ -1,0 +1,35 @@
+Device: cuda
+Seeds: init=46, split=42, shuffle=42
+Model: softmax
+Epoch 1: average training loss = 0.6037
+Epoch 2: average training loss = 0.4872
+Epoch 3: average training loss = 0.4658
+Validation samples: 6000
+Validation correct: 4810
+Validation accuracy: 80.17%
+T-shirt/top: 330/658, accuracy = 50.15%
+Trouser: 593/611, accuracy = 97.05%
+Pullover: 515/612, accuracy = 84.15%
+Dress: 512/562, accuracy = 91.10%
+Coat: 235/607, accuracy = 38.71%
+Sandal: 539/613, accuracy = 87.93%
+Shirt: 457/600, accuracy = 76.17%
+Sneaker: 515/537, accuracy = 95.90%
+Bag: 562/598, accuracy = 93.98%
+Ankle boot: 552/602, accuracy = 91.69%
+
+Confusion matrix (rows=true, columns=predicted):
+tensor([[330,   3,  21,  57,   1,   1, 239,   0,   6,   0],
+        [  0, 593,   4,  10,   1,   0,   2,   0,   1,   0],
+        [  1,   2, 515,   6,  13,   0,  71,   0,   4,   0],
+        [  1,   6,   5, 512,   7,   0,  31,   0,   0,   0],
+        [  0,   2, 166,  42, 235,   0, 160,   0,   2,   0],
+        [  2,   1,   0,   0,   0, 539,   0,  42,   8,  21],
+        [ 14,   5,  67,  37,  11,   0, 457,   0,   9,   0],
+        [  0,   0,   0,   0,   0,  13,   0, 515,   2,   7],
+        [  0,   0,   3,   3,   1,   1,  18,  10, 562,   0],
+        [  0,   0,   1,   0,   0,   4,   0,  44,   1, 552]])
+Matrix samples: 6000
+Matrix correct: 4810
+Row counts match: True
+Diagonal counts match: True
