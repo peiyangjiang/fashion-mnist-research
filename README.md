@@ -6,7 +6,7 @@
 
 本项目通过受控实验比较 Softmax Regression 与多层感知机（MLP），研究两类模型的分类表现、训练数据量的影响，以及错误训练标签下的模型行为。
 
-## 研究目标
+## 研究目标 
 
 我希望逐步通过实验回答以下问题：
 
@@ -34,6 +34,33 @@
 
 ## 当前进度
 
-项目处于准备阶段，已创建本地项目文件夹并完成 Git 仓库初始化，尚未实现模型或开展实验。
+已实现 Softmax Regression 和 MLP 的训练与验证流程，并完成以下实验：
 
-运行说明将在实现第一个可运行版本后补充；实验结果与结论将在完成相应实验后记录。
+- **类别与错误分析**：比较逐类别召回率和混淆矩阵。
+- **初始化敏感性实验**：固定数据划分和训练顺序，比较五个初始化 seed。
+- **训练数据量实验**：比较 6,000、18,000、54,000 个训练样本，在固定 5,000 次参数更新下完成 30 组运行，并保存日志和图表。
+
+目前结果均来自验证集，官方测试集尚未评估。错误标签与记忆现象仍是后续研究方向。
+
+实验记录：
+
+- [初始基线](baseline.md)
+- [模型与分类错误比较](comparison.md)
+- [初始化敏感性实验](initialization.md)
+- [训练数据量实验](data_size.md)
+
+## 如何运行
+
+当前环境已在 Windows 和 NVIDIA GPU 上验证。
+
+在项目文件夹中打开 PowerShell，依次执行：
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe train.py
+```
+
+首次运行会自动下载 FashionMNIST 数据集。
+
+模型、训练样本数和初始化 seed 可以在 `train.py` 中通过 `model_name`、`train_size` 和 `init_seed` 修改。
