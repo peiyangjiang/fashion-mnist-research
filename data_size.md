@@ -212,17 +212,27 @@
 - 同一初始化编号不代表两个不同结构拥有相同初始权重；模型比较同时涉及参数数量与非线性结构。
 - 训练损失按每次遍历统计，跨数据量的窗口不同，最后一次遍历可能不完整；未使用统一步数窗口或固定模型重新评估训练损失。
 - 矩阵为类别汇总，没有逐样本预测或模型参数文件，不能据此确定某张图片在两个模型间如何改变预测，或定位具体的视觉原因。
-- 3 份已有日志缺少执行时源码校验值；实验源码及结果仍需通过 Git 提交关联。本次未自动提交或上传。
+- 3 份已有日志缺少执行时源码校验值；实验代码和结果已归档于 `28cb770`，但归档版本不能补足这些日志的执行时源码记录。
 - 官方测试集仍未评估，本记录报告的是验证表现。
 
-## 当前代码与复现
+## 归档代码与复现
 
-批量执行时使用的完整源码和每组配置保存在机器可读结果中。工作区 [train.py](train.py) 当前仍为 Softmax、18,000 个训练样本、初始化 seed 46；split／shuffle／subset seed 都是 42，max_steps 为 5,000。
+本实验源码和结果归档于 [28cb770](https://github.com/peiyangjiang/fashion-mnist-research/blob/28cb7709ed4d0913b413df01a54db485a6903fa8/train.py)。该版本的训练源码与 [汇总 JSON](results/data_size_summary.json) 中的 `base_source_text` 一致（统一换行后按 UTF-8 校验）。各组配置和补跑 27 组的执行源码校验值也保存在 JSON 中。
 
-复现某组时，在训练程序中设置对应的 `model_name`、`train_size` 和 `init_seed`，保持其余配置不变，再启动一次新程序并保存输出。例如，上述当前配置的命令为：
+归档程序最后保留的配置为 Softmax、18,000 个训练样本、初始化 seed 46；split／shuffle／subset seed 都是 42，max_steps 为 5,000。后续工作区的 `train.py` 已加入错误标签处理和命令参数，其默认配置不对应这里的历史示例。
+
+从项目根目录导出本实验程序，不覆盖当前 `train.py`：
 
 ```powershell
-.\.venv\Scripts\python.exe train.py | Tee-Object -FilePath results\softmax_n18000_init46_steps5000.txt
+if (Test-Path .\reproduce_data_size.py) { throw "该文件已存在，请换用新的文件名。" }
+git show 28cb770:train.py | Set-Content -LiteralPath .\reproduce_data_size.py -Encoding utf8
 ```
 
-###### 该示例会写入对应日志文件，重新核对时应使用新的文件名保留原始记录。
+复现某组时，在导出的程序中设置对应的 `model_name`、`train_size` 和 `init_seed`，保持其余配置不变，每组启动一次新程序。比如保持归档默认配置，保存为一次新的核对日志：
+
+```powershell
+if (Test-Path .\results\softmax_n18000_init46_steps5000_r02.txt) { throw "该日志已存在，请换用新的编号。" }
+.\.venv\Scripts\python.exe .\reproduce_data_size.py | Tee-Object -FilePath .\results\softmax_n18000_init46_steps5000_r02.txt
+```
+
+本例仅运行一组。完整实验为两种模型、三种训练数据量和五个初始化的 30 个组合，见上文配置表。请保留原始日志；若 r02 已存在，换用新的编号。环境与其他实验的版本入口见 [README](README.md#实验版本与复现)。

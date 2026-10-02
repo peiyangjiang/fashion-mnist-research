@@ -294,10 +294,14 @@ split seed、subset seed、shuffle seed、noise seed 均保持 42，使用各自
 
 ### 复现单组配置
 
-例如，运行 seed 43 的 Softmax、20% 错误标签组合：
+新增 16 组的训练源码归档于 [d078774](https://github.com/peiyangjiang/fashion-mnist-research/blob/d078774da6e9cfa51033afe2b7ae482b4e5973f9/train.py)，与汇总 JSON 中的 `source_text` 一致（统一换行后按 UTF-8 校验）。seed 42 的四组初步结果使用命令参数加入前的 [f242f8b](https://github.com/peiyangjiang/fashion-mnist-research/blob/f242f8bdbf12b47d10c0123f0c897bcce987e4d5/train.py)，当时没有单独记录执行时源码校验值。
+
+当前工作区程序的源码仍与 `d078774` 的训练源码一致。例如，从项目根目录运行 seed 43 的 Softmax、20% 错误标签组合：
 
 ```powershell
 .\.venv\Scripts\python.exe -u train.py --init-seed 43 --model softmax --noise-rate 0.2
 ```
 
 通过三个参数切换到表内任一组合，其余固定配置见本计划。若保存新的重复运行日志，使用新编号，保留本次 r01 原始记录。直接运行 train.py 的默认配置仍为 init seed 42、MLP、20% 错误标签。
+
+如后续程序发生变化，按 [README 的历史程序导出方法](README.md#实验版本与复现) 从 `d078774` 导出到新文件，再对该文件使用相同命令参数。两种模型、两个噪声比例和五个初始化共 20 组；本节示例只运行其中一组。

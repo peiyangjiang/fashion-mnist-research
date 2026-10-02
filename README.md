@@ -123,3 +123,43 @@ python -m venv .venv
 训练样本数仍通过 `train.py` 中的 `train_size` 设置；数据划分、子集选择、训练打乱与标签噪声使用各自固定的 seed。当前默认使用 18,000 个训练样本和 5,000 次参数更新。
 
 `--noise-rate 0.0` 时没有被改标签样本，两项噪声评估指标显示为 `N/A`。
+
+## 实验版本与复现
+
+直接运行当前 `train.py` 只执行一组错误标签实验，不会自动重现全部表格。历史实验使用不同训练程序，应从对应 Git 版本获取源码；下表的链接固定到归档版本，不随当前文件变化。
+
+| 实验记录 | 归档代码版本 | 复现时需要选择的配置 |
+| --- | --- | --- |
+| [初始 baseline](baseline.md) | [1187e7f](https://github.com/peiyangjiang/fashion-mnist-research/blob/1187e7fb314d73e719f51fe83137d3192dcd4a34/train.py) | Softmax，54,000 样本，seed 42，3 个 epoch；保留当时的数据预览 |
+| [模型与分类错误比较](comparison.md) | [7e8931f](https://github.com/peiyangjiang/fashion-mnist-research/blob/7e8931f46304c62817cf6f09ca53fe154ce7f69a/train.py) | 修改 `model_name`，两种模型各运行一次；seed 42，54,000 样本，3 个 epoch |
+| [初始化敏感性](initialization.md) | [d0eeb9c](https://github.com/peiyangjiang/fashion-mnist-research/blob/d0eeb9ce2f600b9081442fcede71d984f5f298f3/train.py) | 修改 `model_name`、`init_seed`；两种模型 × seed 42～46，3 个 epoch |
+| [训练数据量](data_size.md) | [28cb770](https://github.com/peiyangjiang/fashion-mnist-research/blob/28cb7709ed4d0913b413df01a54db485a6903fa8/train.py) | 修改 `model_name`、`train_size`、`init_seed`；两种模型 × 三种数据量 × 五个初始化，5,000 次更新 |
+| [错误标签实验](label_noise.md) | [d078774](https://github.com/peiyangjiang/fashion-mnist-research/blob/d078774da6e9cfa51033afe2b7ae482b4e5973f9/train.py) | 用命令参数选择两种模型 × 0%／20% 噪声 × 五个初始化；18,000 样本，5,000 次更新 |
+
+归档版本保存的是该阶段最后一组配置；复现其他组合时，按对应实验记录修改上述变量，其余设置保持不变。错误标签 seed 42 的四组原始记录使用命令参数加入前的 [f242f8b 版本](https://github.com/peiyangjiang/fashion-mnist-research/blob/f242f8bdbf12b47d10c0123f0c897bcce987e4d5/train.py)。
+
+例如，从项目根目录导出数据量实验的历史程序，保留当前 `train.py`：
+
+```powershell
+if (Test-Path .\reproduce_data_size.py) { throw "该文件已存在，请换用新的文件名。" }
+git show 28cb770:train.py | Set-Content -LiteralPath .\reproduce_data_size.py -Encoding utf8
+```
+
+在导出的文件中设置目标 `model_name`、`train_size`、`init_seed`，再从项目根目录运行：
+
+```powershell
+.\.venv\Scripts\python.exe .\reproduce_data_size.py
+```
+
+这两段命令仅导出并运行一组配置，不会汇总全部组合。其他历史程序也可用对应提交编号导出到不同的新文件名；安装依赖的方法见上文。保存重复运行日志时使用新编号，保留已有原始日志。
+
+结果来源与复现边界：
+
+- 数据量实验的 [汇总 JSON](results/data_size_summary.json) 保存源码快照、各组配置和 27 组补跑的执行源码校验值；其余 3 份已有日志未保存执行时源码校验值。
+- 错误标签实验的 [汇总 JSON](results/label_noise_summary.json) 保存 20 组指标与日志校验值，以及新增 16 组使用的源码快照；[审计 JSON](results/label_noise_audit.json) 保存数据与标签核对。
+- 初始 baseline 没有单独归档的完整日志，初始化实验的 seed 42 来源于比较记录，不能视为各自另有一份完整日志。归档 Git 版本也不能替代缺失的执行时记录。
+- 环境已记录 Windows、Python 3.13.9、PyTorch 2.11.0+cu128、torchvision 0.26.0+cu128 和本机 GPU；依赖清单只固定直接依赖。固定 seed 与确定性设置支持本机重复性，不保证不同硬件、驱动或软件版本逐位一致。
+
+## 阶段性完成范围
+
+本项目已完成三个研究问题的受控实验、初始化重复、结果分析和研究报告，可作为第一版探索性研究项目收尾。当前结论来自验证集，尚未进行官方测试集的最终评估，也未确定错误标签的记忆机制。增加测试集评估、改变数据划分或记录更长训练过程，属于后续研究，不是本版已经完成的内容。

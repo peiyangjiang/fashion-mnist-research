@@ -61,7 +61,7 @@
 1. 将原先一个 `seed` 拆成 `init_seed`、`split_seed`、`shuffle_seed`，先全部设为 42，核对原来的 MLP 结果。
 2. 仅改变初始化 seed 与模型选择，每次启动新的程序，从头初始化模型和优化器。
 3. 按预定的五个 seed 收集两种模型结果，不依据结果选择或删除某个 seed。
-4. seed 43–46 的终端完整输出保存至 `results/`。命令示例：
+4. seed 43–46 的终端完整输出保存至 `results/`。当时使用的命令为（这是原始记录的保存方式，重新运行请使用文末的新文件名示例）：
 
    ```powershell
    .\.venv\Scripts\python.exe train.py | Tee-Object -FilePath results\mlp_init46.txt
@@ -89,7 +89,7 @@
 - [softmax，init seed 46](results/softmax_init46.txt)
 - [mlp，init seed 46](results/mlp_init46.txt)
 
-当前 `train.py` 最后保留的配置为 `model_name = "mlp"`、`init_seed = 46`、`split_seed = 42`、`shuffle_seed = 42`。本次代码与记录的 Git 提交编号待保存后补充。
+本实验代码和记录归档于 [d0eeb9c](https://github.com/peiyangjiang/fashion-mnist-research/blob/d0eeb9ce2f600b9081442fcede71d984f5f298f3/train.py)。该版本最后保留的配置为 `model_name = "mlp"`、`init_seed = 46`、`split_seed = 42`、`shuffle_seed = 42`；这是历史版本的设置，不是后续工作区程序的默认值。八份日志未单独记录执行时源码校验值，归档版本不能替代这项缺失。
 
 ## 每次运行结果
 
@@ -187,3 +187,16 @@ Sandal 的方向随初始化变化：MLP 为 1 次更高、1 次持平、3 次�
 - 本实验使用验证集，尚未评估官方测试集，结果不能直接作为最终测试表现。
 
 本实验支持的结论是：在当前固定划分、训练顺序、训练预算与选定的五个初始化下，MLP 整体准确率较高，且若干类别差异方向一致；差距大小以及部分类别和错分方向仍随初始化变化。
+
+## 复现单组配置
+
+按 [README 的历史程序导出方法](README.md#实验版本与复现)，从 `d0eeb9c` 导出 `train.py`，另存为项目根目录中的 `reproduce_initialization.py`。在该文件中选择 `model_name = "softmax"` 或 `"mlp"`，以及 `init_seed = 42`、`43`、`44`、`45` 或 `46`，其余设置保持不变。
+
+例如，保留归档默认值 MLP、seed 46，保存为新的日志：
+
+```powershell
+if (Test-Path .\results\mlp_init46_r02.txt) { throw "该日志已存在，请换用新的编号。" }
+.\.venv\Scripts\python.exe .\reproduce_initialization.py | Tee-Object -FilePath .\results\mlp_init46_r02.txt
+```
+
+每个组合都从项目根目录启动新程序。两种模型和五个初始化共十组；新的 seed 42 日志应标为后续重复运行，不能补称为本实验当时的原始日志。
